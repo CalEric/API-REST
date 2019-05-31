@@ -4,6 +4,26 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var Celulares = require('../models/celulares');
 
+//POST para ingresar nuevo celular
+router.post('/', function(req, res, next) {
+  var Celular = Celulares({
+    id: req.body.id,
+    Marca:req.body.Marca,
+    Modelo:req.body.Modelo,
+    Año:req.body.Año,
+    Imagen:req.body.Imagen
+  });
+    Celular.save(function(err, data) {
+    if (err) {
+      res.status(404).json({
+        mensaje: "Error al guardar"
+      });
+    } else {
+      res.status(201).json(data);
+    }
+  });
+});
+
 // GET para todos
 router.get('/', function(req, res, next) {
   Celulares.find({}, function(err, datos) {
@@ -29,30 +49,6 @@ router.get('/:celId', function(req, res, next) {
 
 });
 
-//POST para ingresar nuevo celular
-router.post('/', function(req, res, next) {
-  var Celular = Celulares({
-    id: req.body.id,
-    Marca:req.body.Marca,
-    Modelo:req.body.Modelo,
-    Año:req.body.Año,
-    Imagen:req.body.Imagen
-  });
-  
-
-
-  Celular.save(function(err, data) {
-    if (err) {
-      res.status(404).json({
-        mensaje: "Error al guardar"
-      });
-    } else {
-      res.status(201).json(data);
-    }
-  });
-
-});
-
 //DELETE por el ID del celular
 router.delete('/:celId', function(req, res, next) {
   Celulares.findOneAndDelete({
@@ -70,10 +66,10 @@ router.delete('/',function(req,res,next){
   res.status(405).json({mensaje:'Accion no permitida'});
 });
 
-//PUT por ID
+//PUT por ID del celular
 router.put('/:celId',function(req, res, error){
     let update =req.body;
-  Celulares.replaceOne({'Id': req.params.AutosId}, update, function(err, data){
+  Celulares.replaceOne({ id: req.params.celId}, update, function(err, data){
     if(err){
       res.status(404).json({mensaje: "Ese ID no existe en la base."});
     } else{
@@ -87,10 +83,10 @@ router.put('/', function (req, res){
   res.status(405).json({mensaje:'Accion no permitida'});
 });
 
-//PATCH para un ID
+//PATCH por ID del celular
 router.patch('/:celId',function(req, res, error){
   let update =req.body;
-  Celulares.findOneAndUpdate({'Id': req.params.AutosId}, update, function(err, data){
+  Celulares.findOneAndUpdate({ id: req.params.celId}, update, function(err, data){
     if(err){
       res.status(404).json({mensaje: "No se encontro Id"});
     } else{
@@ -99,10 +95,9 @@ router.patch('/:celId',function(req, res, error){
   });
 });
 
- //PATCH para toda la base
+ //PATCH para todo (no permitirlo)
 router.patch('/', function (req, res){
   res.status(405).json({mensaje:'Accion no permitida'});
 });
-
 
 module.exports = router;
