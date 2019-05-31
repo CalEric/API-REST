@@ -5,7 +5,8 @@ var celularesSchema =  Schema({
   id:Number,
   Marca:String,
   Modelo:String,
-  Año:Number
+  Año:Number,
+  Imagen: String,
 });
 
 module.exports = mongoose.model('Celulares', celularesSchema);
